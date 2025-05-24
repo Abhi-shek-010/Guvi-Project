@@ -16,3 +16,22 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+# Chat Application
+
+## Project Structure
+- `src/main/java/com/chatapp/`: Contains the main application code.
+- `src/main/resources/`: Contains the JSON file for bot responses.
+- `lib/`: Contains required JAR files.
+
+## Libraries Required
+- Gson (for JSON parsing)
+
+## How to Run
+1. Ensure you have JDK installed.
+2. Add the required JAR files to your project.
+3. Compile and run `ChatUI.java`.
+
+## Future Enhancements
+- Integrate a server for real-time chat.
+- Implement user accounts and password features.
