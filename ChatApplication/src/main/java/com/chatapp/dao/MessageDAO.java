@@ -1,12 +1,12 @@
 package com.chatapp.dao;
 
-import com.chatapp.model.Message;
-import com.google.gson.Gson;
+//import com.chatapp.model.Message;
+//import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.FileReader;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
