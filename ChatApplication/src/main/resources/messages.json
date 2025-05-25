@@ -3,9 +3,10 @@
 
         "hi": "Hi there! How can I assist you today?",
         "hello": "Hi there! How can I assist you today?",
-        "how are you?": "I'm just a bot, but I'm here to help you!",
-        "dogi kya?": " Apni Mummy se maang na chinar ke bacche",
+        "how are you?": "I'm just a bot, but I'm here to help you! Type 'help' to know to what I can do.",
+        "help":"Some Commands:  'exit' - To end Chat,  'clear history' - To clear Chat History",
         "bye": "Goodbye! Have a great day!",
+
         "default": "I'm not sure how to respond to that."
     }
 }

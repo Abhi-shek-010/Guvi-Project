@@ -10,21 +10,18 @@
     },
     {
         "type": "java",
-        "name": "Launch ChatUI",
+        "name": "ChatApp",
         "request": "launch",
-        "mainClass": "com.chatapp.ui.ChatUI",
+        "mainClass": "com.chatapp.ui.ChatApp",
+        "projectName": "ChatApplication_57233e33"
+    },
+    {
+        "type": "java",
+        "name": "Launch ChatApp",
+        "request": "launch",
+        "mainClass": "com.chatapp.ui.ChatApp",
         "projectName": "ChatApplication",
-        "vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml",
-        "classPaths": [
-            "lib/gson-2.8.8.jar",
-            "lib/javafx.base.jar",
-            "lib/javafx.controls.jar",
-            "lib/javafx.graphics.jar",
-            "lib/javafx.fxml.jar",
-            "lib/javafx.media.jar",
-            "lib/javafx.swing.jar",
-            "lib/javafx.web.jar"
-        ]
+        "vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml"
     }
 ]
 }
