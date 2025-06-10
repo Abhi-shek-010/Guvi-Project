@@ -1,5 +1,5 @@
-package test.java.com.chatapp;
+// package test.java.com.chatapp;
 
-public class ChatServiceTest {
+// public class ChatServiceTest {
     
-}
+// }

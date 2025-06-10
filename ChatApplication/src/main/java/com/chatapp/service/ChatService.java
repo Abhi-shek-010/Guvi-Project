@@ -2,38 +2,51 @@ package com.chatapp.service;
 
 import com.chatapp.dao.MessageDAO;
 import java.io.*;
+import java.nio.file.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ChatService {
     private MessageDAO messageDAO;
     private List<String> messageHistory;
-    private static final String HISTORY_FILE = "src/main/resources/chat_history.txt";
+    private static final String HISTORY_FILE = "chat_history.txt";
+    private final Path historyPath;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public ChatService() {
         messageDAO = new MessageDAO();
-        messageHistory = loadMessageHistory(); // Load history on startup
+        Path homeDir = Paths.get(System.getProperty("user.home"), ".chatapp");
+        try {
+            Files.createDirectories(homeDir);
+        } catch (IOException e) {
+            // Silently handle directory creation error
+        }
+        historyPath = homeDir.resolve(HISTORY_FILE);
+        messageHistory = loadMessageHistory();
     }
 
     public void startChat() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Chat Application!");
+        displayWelcomeMessage();
         
         while (true) {
             System.out.print("You: ");
             String userInput = scanner.nextLine();
             if (userInput.equalsIgnoreCase("clear history")) {
-                clearMessageHistory(); // Clear history command
+                clearMessageHistory();
                 continue;
             }
             String botResponse = messageDAO.getResponse(userInput);
-            messageHistory.add("You: " + userInput);
-            messageHistory.add("Bot: " + botResponse);
+            String timestamp = LocalDateTime.now().format(TIME_FORMATTER);
+            messageHistory.add(String.format("[%s] You: %s", timestamp, userInput));
+            messageHistory.add(String.format("[%s] Bot: %s", timestamp, botResponse));
+            
             if (userInput.equalsIgnoreCase("exit")) {
-                System.out.println("Chat ended.");
-                saveMessageHistory(); // Save history on exit
-                displayMessageHistory(); // Call to display message history
+                System.out.println("\nChat ended. Goodbye!");
+                saveMessageHistory();
                 break;
             }
             System.out.println("Bot: " + botResponse);
@@ -41,49 +54,55 @@ public class ChatService {
         scanner.close();
     }
 
-    // Load message history from file
+    private void displayWelcomeMessage() {
+        System.out.println("\n=== Chat Application ===");
+        if (!messageHistory.isEmpty()) {
+            System.out.println("\nPrevious Chat History:");
+            for (String message : messageHistory) {
+                System.out.println(message);
+            }
+            System.out.println("\n=== New Chat Session ===");
+        }
+        System.out.println("\nType your message and press Enter to chat.");
+        System.out.println("Type 'exit' to end the chat.");
+        System.out.println("Type 'clear history' to clear chat history.");
+        System.out.println("========================\n");
+    }
+
     private List<String> loadMessageHistory() {
         List<String> history = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(HISTORY_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                history.add(line);
+        if (Files.exists(historyPath)) {
+            try (BufferedReader reader = Files.newBufferedReader(historyPath)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    history.add(line);
+                }
+            } catch (IOException e) {
+                // Silently handle file reading error
             }
-        } catch (IOException e) {
-            System.out.println("No previous history found.");
         }
         return history;
     }
 
-    // Save message history to file
     private void saveMessageHistory() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(historyPath, 
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             for (String message : messageHistory) {
                 writer.write(message);
                 writer.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Error saving message history.");
+            // Silently handle file writing error
         }
     }
 
-    // Clear message history
     private void clearMessageHistory() {
         messageHistory.clear();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE))) {
-            writer.write(""); // Clear the file
+        try {
+            Files.deleteIfExists(historyPath);
+            System.out.println("\nChat history has been cleared.");
         } catch (IOException e) {
-            System.out.println("Error clearing message history.");
+            // Silently handle file deletion error
         }
-        System.out.println("Message history cleared.");
-    }
-
-    // New method to display message history
-    private void displayMessageHistory() {
-        System.out.println("\n--- Message History ---");
-        for (String message : messageHistory) {
-            System.out.println(message);
-        }
-        System.out.println("-----------------------\n");
     }
 }
