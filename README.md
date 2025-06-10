@@ -41,8 +41,8 @@ A real-time chat application built using Java that enables users to communicate 
 
 ## Contact
 For any queries or support, please contact:
-- GitHub: [Your GitHub Profile]
-- Email: [Your Email]
+- GitHub: https://github.com/Abhi-shek-010
+- Email: abhi0shek6@gmail.com
 
 ## License
 This project is licensed under the MIT License.
