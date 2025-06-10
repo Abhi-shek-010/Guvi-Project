@@ -1,48 +1,53 @@
 # Chat Application
 
 ## Overview
-A real-time chat application built using Java that enables users to communicate with each other through a user-friendly interface. The application supports instant messaging, user authentication, and real-time message delivery.
+A simple console-based chat application that simulates a conversation with a bot. The application provides a WhatsApp-like interface in the console and maintains chat history for future reference.
 
 ## Features
-- Real-time messaging between users
-- User authentication and secure login
-- Message history and chat persistence
-- User-friendly graphical interface
-- Support for multiple chat sessions
-- Message delivery status indicators
+- Interactive console-based chat interface with a bot
+- Persistent chat history storage
+- Timestamp for each message
+- Clean and organized message display
+- Command support for managing chat history
+- Simple and intuitive user interface
 
 ## Technical Stack
-- Java
-- JavaFX for GUI
-- Socket Programming for real-time communication
-- MySQL for data persistence
-- Maven for dependency management
+- Java 11 or higher
+- Maven for project management
+- Gson for JSON handling
 
 ## Setup Instructions
-1. Ensure you have Java JDK 8 or higher installed
-2. Install MySQL Server and set up the database
+1. Ensure you have Java 11 or higher installed
+2. Install Maven
 3. Clone the repository
-4. Configure the database connection in the application
-5. Build the project using Maven: mvn clean install
-6. Run the application using the provided executable
+4. Build the project using Maven: mvn clean install
+5. Run the application using: mvn exec:java -Dexec.mainClass="com.chatapp.ui.ChatUI"
 
 ## Usage
 1. Launch the application
-2. Login with your credentials or create a new account
-3. Start chatting with other online users
-4. Create or join chat rooms
-5. Send and receive messages in real-time
+2. Type your message and press Enter to chat with the bot
+3. Available commands:
+   - Type 'exit' to end the chat session
+   - Type 'clear history' to clear chat history
+   - Type 'help' to show available commands
 
 ## Project Structure
 - src/: Contains all source code
-- lib/: External libraries and dependencies
+  - dao/: Data Access Object for message handling
+  - service/: Core chat functionality
+  - ui/: User interface components
+- lib/: External libraries
 - target/: Compiled classes and build artifacts
 - pom.xml: Maven configuration file
 
+## Data Storage
+- Chat history is stored in ~/.chatapp/chat_history.txt
+- Bot responses are configured in ~/.chatapp/messages.json
+
 ## Contact
 For any queries or support, please contact:
-- GitHub: [Your GitHub Profile]
-- Email: [Your Email]
+- GitHub: https://github.com/Abhi-shek-010
+- Email: abhi0shek6@gmail.com
 
 ## License
 This project is licensed under the MIT License.
