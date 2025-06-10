@@ -15,6 +15,8 @@ public class ChatService {
     private static final String HISTORY_FILE = "chat_history.txt";
     private final Path historyPath;
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final int MAX_MESSAGE_LENGTH = 500;
+    private static final int MAX_HISTORY_SIZE = 1000;
 
     public ChatService() {
         messageDAO = new MessageDAO();
@@ -22,7 +24,8 @@ public class ChatService {
         try {
             Files.createDirectories(homeDir);
         } catch (IOException e) {
-            // Silently handle directory creation error
+            System.err.println("Error: Could not create chat directory. Please check your permissions.");
+            System.exit(1);
         }
         historyPath = homeDir.resolve(HISTORY_FILE);
         messageHistory = loadMessageHistory();
@@ -33,25 +36,59 @@ public class ChatService {
         displayWelcomeMessage();
         
         while (true) {
-            System.out.print("You: ");
-            String userInput = scanner.nextLine();
-            if (userInput.equalsIgnoreCase("clear history")) {
-                clearMessageHistory();
-                continue;
+            try {
+                System.out.print("You: ");
+                String userInput = scanner.nextLine().trim();
+                
+                // Input validation
+                if (userInput.isEmpty()) {
+                    System.out.println("Error: Message cannot be empty. Please try again.");
+                    continue;
+                }
+                
+                if (userInput.length() > MAX_MESSAGE_LENGTH) {
+                    System.out.println("Error: Message is too long. Maximum length is " + MAX_MESSAGE_LENGTH + " characters.");
+                    continue;
+                }
+
+                if (userInput.equalsIgnoreCase("clear history")) {
+                    clearMessageHistory();
+                    continue;
+                }
+
+                if (userInput.equalsIgnoreCase("help")) {
+                    displayHelp();
+                    continue;
+                }
+
+                String botResponse = messageDAO.getResponse(userInput);
+                if (botResponse == null) {
+                    System.out.println("Error: Could not get response from bot. Please try again.");
+                    continue;
+                }
+
+                String timestamp = LocalDateTime.now().format(TIME_FORMATTER);
+                addToHistory(String.format("[%s] You: %s", timestamp, userInput));
+                addToHistory(String.format("[%s] Bot: %s", timestamp, botResponse));
+                
+                if (userInput.equalsIgnoreCase("exit")) {
+                    System.out.println("\nChat ended. Goodbye!");
+                    saveMessageHistory();
+                    break;
+                }
+                System.out.println("Bot: " + botResponse);
+            } catch (Exception e) {
+                System.err.println("Error: An unexpected error occurred. Please try again.");
             }
-            String botResponse = messageDAO.getResponse(userInput);
-            String timestamp = LocalDateTime.now().format(TIME_FORMATTER);
-            messageHistory.add(String.format("[%s] You: %s", timestamp, userInput));
-            messageHistory.add(String.format("[%s] Bot: %s", timestamp, botResponse));
-            
-            if (userInput.equalsIgnoreCase("exit")) {
-                System.out.println("\nChat ended. Goodbye!");
-                saveMessageHistory();
-                break;
-            }
-            System.out.println("Bot: " + botResponse);
         }
         scanner.close();
+    }
+
+    private void addToHistory(String message) {
+        messageHistory.add(message);
+        if (messageHistory.size() > MAX_HISTORY_SIZE) {
+            messageHistory.remove(0);
+        }
     }
 
     private void displayWelcomeMessage() {
@@ -63,9 +100,15 @@ public class ChatService {
             }
             System.out.println("\n=== New Chat Session ===");
         }
-        System.out.println("\nType your message and press Enter to chat.");
-        System.out.println("Type 'exit' to end the chat.");
-        System.out.println("Type 'clear history' to clear chat history.");
+        displayHelp();
+    }
+
+    private void displayHelp() {
+        System.out.println("\nAvailable Commands:");
+        System.out.println("- Type your message to chat with the bot");
+        System.out.println("- Type 'exit' to end the chat");
+        System.out.println("- Type 'clear history' to clear chat history");
+        System.out.println("- Type 'help' to show this help message");
         System.out.println("========================\n");
     }
 
@@ -78,7 +121,7 @@ public class ChatService {
                     history.add(line);
                 }
             } catch (IOException e) {
-                // Silently handle file reading error
+                System.err.println("Warning: Could not load chat history. Starting with empty history.");
             }
         }
         return history;
@@ -92,7 +135,7 @@ public class ChatService {
                 writer.newLine();
             }
         } catch (IOException e) {
-            // Silently handle file writing error
+            System.err.println("Error: Could not save chat history. Your messages may be lost.");
         }
     }
 
@@ -102,7 +145,7 @@ public class ChatService {
             Files.deleteIfExists(historyPath);
             System.out.println("\nChat history has been cleared.");
         } catch (IOException e) {
-            // Silently handle file deletion error
+            System.err.println("Error: Could not clear chat history file.");
         }
     }
 }

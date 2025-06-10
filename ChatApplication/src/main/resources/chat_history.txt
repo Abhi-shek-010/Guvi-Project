@@ -1,2 +1,0 @@
-You: exit
-Bot: I'm not sure how to respond to that.
