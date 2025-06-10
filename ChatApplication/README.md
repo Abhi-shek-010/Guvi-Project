@@ -66,6 +66,7 @@ java -jar target/chat-application-1.0-SNAPSHOT.jar
 - Type your message and press Enter to chat with the bot
 - Type `exit` to end the chat session
 - Type `clear history` to clear the chat history
+- Type `help` to show available commands
 
 ### Chat History
 
@@ -98,9 +99,9 @@ ChatApplication/
 │       │               └── ChatUI.java             # Main application entry point
 │       └── resources/                              # Default configuration files
 │           └── messages.json                       # Default bot responses
-├── target/                                         # Compiled files and build output
 ├── pom.xml                                         # Maven project configuration
-└── README.md                                       # Project documentation
+├── README.md                                       # Project documentation
+└── DOCUMENTATION.md                                # Detailed technical documentation
 ```
 
 ### Key Components
